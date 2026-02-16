@@ -5,12 +5,13 @@
 
   (import (scheme base)
           (pp1 graphics)
-          (pacman constants))
-  (export (make-draw))
+          (pac-man-project constants))
+  (export make-draw)
+
 
   (begin
 
-    (define (make-draw width  height  )
+    (define (make-draw width  height)
       (let ((window (make-window width  height "pac-man phase 1")))
         ((window 'set-background!) "black")
 
@@ -30,6 +31,6 @@
       
 
       (lambda (msg)
-        (cond ((eq? msg 'start-draw!) start-draw!)
+        (cond ((eq? msg 'start-draw!) )
               (else (error "draw adt -- unknown message:" msg))))))))
           
