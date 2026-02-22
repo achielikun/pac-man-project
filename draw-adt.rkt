@@ -12,7 +12,7 @@
   (begin
 
     (define (make-draw width  height)
-      (let ((window (make-window width  height "pac-man phase 1")))
+      (let ((window (make-window width  height "pac-man phase 1" 300)))
         ((window 'set-background!) "black")
 
         (define (draw-object! obj tile)
