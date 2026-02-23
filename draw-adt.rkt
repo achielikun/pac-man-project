@@ -33,7 +33,8 @@
         
         
         (define level-layer ((window 'new-layer!)))
-        (define level-tile #|bitmap|# )
+        (define wall-tile (make-tile cel-width-px cel-height-px ))
+        ((wall-tile 'draw-rectangle!) 10 10 180 80 "blue")
         
         
         (define coin-layer ((window 'new-layer!)))
