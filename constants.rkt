@@ -19,9 +19,10 @@
     (define cel-height-px 30)
     (define game-width 28)
     (define game-height 31)
-
-    (define window-height-px (* cel-height-px game-height))
-    (define window-width-px (* cel-width-px game-width))
+    
+    ;; added one extra cel for the score location
+    (define window-height-px (+ (* cel-height-px game-height) cel-height-px) 
+    (define window-width-px (+ (* cel-width-px game-width) cel-width-px)
     
 
 

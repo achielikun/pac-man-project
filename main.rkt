@@ -8,3 +8,5 @@
 
 
 (define game (make-draw  window-height-px window-width-px))
+
+(game 'draw-maze!)

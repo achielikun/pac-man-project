@@ -2,7 +2,7 @@
 
 (define-library ()
   (import (scheme base))
-  
+  (export make-maze)
   (begin
     (define  (make-maze)
 
@@ -43,11 +43,13 @@
           ))
 
 
-         (define (at? pos)
+            
+      (define (at? pos)
         (let ((x (pos 'x))
               (y (pos 'y)))
           (vector-ref (vector-ref maze x) y)))
-
+      
       (lambda (msg)
         (cond ((eq? msg 'at?) at?)
+              ((eq? msg 'maze) maze)
               (else (error "object adt -- unknown message :" msg)))))))
