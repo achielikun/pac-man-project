@@ -50,18 +50,19 @@
         (define (draw-maze1!)
           
           (do ((i 0 (+ i 1)))
-              ((= i (- game-height 1)))
+              ((= i game-height))
             (let* ((raw-row (vector-ref maze i)))
               
               (do ((j 0 (+ j 1)))
-                  ((= j (- game-width 1)))
+                  ((= j game-width))
                 (if (eq? (vector-ref raw-row j) 'x)
                     (let* ((tile (make-tile cel-width-px cel-height-px)))
 
-                      ((tile 'draw-rectangle!) 0 0 cel-width-px cel-height-px  "blue")
-                      ((tile 'set-x!) (* j cel-width-px))
-                      ((tile 'set-y!) (* i cel-height-px))
-                      ((level-layer 'add-drawable!) tile)))))))
+                      ((tile 'draw-rectangle!) distance-between-tiles distance-between-tiles  cel-width-px cel-height-px  "blue")
+                      ((tile 'set-x!)  (* j cel-width-px))
+                      ;; added plus one so i have a row left for the score
+                      ((tile 'set-y!) (+ cel-height-px (* i cel-height-px)))
+                      (((level-layer) 'add-drawable!) tile)))))))
         
         
         
