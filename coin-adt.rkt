@@ -2,16 +2,24 @@
 (define-library ()
 
   (import (scheme base)
-          (pp1 graphics))
-
+          (pac-man-project position-adt))
+  (export make-coin))
 
   (begin
 
 
-    (define (make-coin pos))
+    (define (make-coin x y)
+      (let ((eaten #f)
+            (pos (make-position x y)))
+        
+        (define (eat!)
+          (set! eaten #t))
+        
+      
+        
 
-
-    (lambda (msg)
-      (cond ((eq? msg 'position) pos)
-            (else (error "object adt -- unknown message :" msg))))
-    ))
+        (lambda (msg)
+          (cond ((eq? msg 'position) pos)
+                ((eq? msg 'eaten?) eaten)
+                ((eq? msg 'eat!)(eat!))
+                (else (error "object adt -- unknown message :" msg)))) )))

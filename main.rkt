@@ -9,4 +9,4 @@
 
 (define game (make-draw  window-width-px window-height-px))
 
-(game 'draw-maze!)
+(game 'draw-game!)

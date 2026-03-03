@@ -13,7 +13,8 @@
           game-height
           window-width-px
           window-height-px
-          distance-between-tiles)
+          distance-between-tiles
+          score-area)
 
   (begin
     (define cel-width-px 23)
@@ -21,15 +22,16 @@
     (define game-width 28)
     (define game-height 31)
     (define distance-between-tiles 3)
-    
+    ;; cel-height-px times a multiple for the score area
+    (define score-area (* cel-height-px 3))
     ;; added one extra cel for the score location
-    (define window-height-px (+ (* cel-height-px game-height) cel-height-px))
+    (define window-height-px (+ (* cel-height-px game-height) score-area))
     (define window-width-px (* cel-width-px game-width))
+
+
     
-
-
-  (define pac-man-speed 200)
-
-  (define ghost-speed 200)))
+    (define pac-man-speed 200)
+    
+    (define ghost-speed 200)))
 
 
