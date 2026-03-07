@@ -7,6 +7,15 @@
 
 
 
-(define game (make-draw  window-width-px window-height-px))
+(define drawer (make-draw  window-width-px window-height-px))
+(drawer 'draw-game!)
+(define window (drawer 'get-window))
 
-(game 'draw-game!)
+((window 'set-update-callback!)
+ (lambda (dt)
+   (let* ((pos (pac-pos 'position))
+          (cur-x (pos 'x)))
+     ((pac-pos 'move!) (+ cur-x 0.1) (pos 'y)))
+   (drawer 'sync-pacman!)))
+
+
