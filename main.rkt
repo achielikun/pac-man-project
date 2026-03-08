@@ -13,9 +13,11 @@
 
 ((window 'set-update-callback!)
  (lambda (dt)
-   (let* ((pos (pac-pos 'position))
-          (cur-x (pos 'x)))
-     ((pac-pos 'move!) (+ cur-x 0.1) (pos 'y)))
-   (drawer 'sync-pacman!)))
+   (let* ((pacman (drawer 'get-pacman))
+          (pos (pacman 'position))
+          (cur-x (pos 'x))
+          (cur-y (pos 'y)))
+     ((pacman 'move!) (+ cur-x 0.1) cur-y)
+     ((drawer 'sync-pacman!)))))
 
 

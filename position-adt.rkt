@@ -16,6 +16,6 @@
       (lambda (msg)
         (cond ((eq? msg 'x) x)
               ((eq? msg 'y) y)
-              ((eq? msg 'set-pos!) 'set-pos!)
+              ((eq? msg 'set-pos!) set-pos!)
               (else (error "position adt -- unknown message:" msg)))))))
       

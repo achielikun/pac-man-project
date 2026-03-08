@@ -25,7 +25,7 @@
                  (x (pos 'x))
                  (y (pos 'y))
                  (pos-x (* x cel-width-px))
-                 (pos-y (* y cel-height-px)))
+                 (pos-y (+ score-area (* y cel-height-px))))
             ((tile 'set-x!) pos-x)
             ((tile 'set-y!) pos-y)))
 
@@ -33,8 +33,9 @@
       
         
         (define pac-man-layer (window 'new-layer!))
-        (define pac-tile '())
-        (define pac-pos '())
+        (define pac-tile #f)
+        (define pac-pos #f)
+        
         
         
         
@@ -47,62 +48,60 @@
    
         
         (define (draw-game!)
-          
-          
-          (do ((i 0 (+ i 1)))
-              ((= i game-height))
-            (let* ((raw-row (vector-ref maze i)))
-              
-              (do ((j 0 (+ j 1)))
-                  ((= j game-width))
-                (cond ((eq? (vector-ref raw-row j) 'x)
-                       (let* ((tile (make-tile cel-width-px cel-height-px)))
+          (let ((maze-tile (make-tile (* game-width cel-width-px) (+ score-area (* game-height cel-height-px)))))
+                
+            
+            (do ((i 0 (+ i 1)))
+                ((= i game-height))
+              (let* ((raw-row (vector-ref maze i)))
+                
+                (do ((j 0 (+ j 1)))
+                    ((= j game-width))
+                  (cond ((eq? (vector-ref raw-row j) 'x)
                          
-                         ((tile 'draw-rectangle!) distance-between-tiles distance-between-tiles  cel-width-px cel-height-px  "blue")
-                         ((tile 'set-x!)  (* j cel-width-px))
-                         ;; added plus score-area so i have a row left for the score
-                         ((tile 'set-y!) (+ score-area (* i cel-height-px)))
-                         (((level-layer) 'add-drawable!) tile)))
-                      ((eq? (vector-ref raw-row j) '())
-                       (let* ((new-coin (make-coin j i))
-                              (coin-size 6)
-                              (offset-x (/ (- cel-width-px coin-size) 2))
-                              (offset-y (/ (- cel-height-px coin-size) 2))
-                              (tile (make-tile cel-width-px cel-height-px)))
+                           
+                         ((maze-tile 'draw-rectangle!)
+                          (* j cel-width-px)
+                          (+ score-area (* i cel-height-px))
+                          (- cel-width-px distance-between-tiles) (- cel-height-px distance-between-tiles)  "blue"))
+                       
                          
-                         ((tile 'draw-ellipse!) offset-x offset-y coin-size coin-size   "yellow")
-                         ((tile 'set-x!)  (* j cel-width-px))
-                         
-                         ((tile 'set-y!) (+ score-area (* i cel-height-px)))
+                        ((eq? (vector-ref raw-row j) '())
+                         (let* ((new-coin (make-coin j i))
+                                (coin-size 6)
+                                (offset-x (/ (- cel-width-px coin-size) 2))
+                                (offset-y (/ (- cel-height-px coin-size) 2))
+                                (tile (make-tile cel-width-px cel-height-px)))
+                           
+                           ((tile 'draw-ellipse!) offset-x offset-y coin-size coin-size   "yellow")
+                           ((tile 'set-x!)  (* j cel-width-px))
+                           
+                           ((tile 'set-y!) (+ score-area (* i cel-height-px)))
                          (((coin-layer) 'add-drawable!) tile)
                          (set! coin-tiles (cons (cons new-coin tile) coin-tiles))))
-                      ((eq? (vector-ref raw-row j) 'p)
-                       (let ((tile (make-tile cel-width-px cel-height-px)))
-                         ((tile 'draw-ellipse!) 2 2 (- cel-width-px 4) (- cel-height-px 4)  "yellow")
-                         ((tile 'set-x!) (* j cel-width-px))
-                         ((tile 'set-y!) (+ score-area (* i cel-height-px)))
-                         (((pac-man-layer) 'add-drawable!) tile)
-                         (set! pac-tile tile)
-                         (set! pac-pos (make-pac-man j i))))
-                       
-                      
-                         )))))
+                        ((eq? (vector-ref raw-row j) 'p)
+                         (let ((tile (make-tile cel-width-px cel-height-px)))
+                           ((tile 'draw-ellipse!) 2 2 (- cel-width-px 4) (- cel-height-px 4)  "yellow")
+                           ((tile 'set-x!) (* j cel-width-px))
+                           ((tile 'set-y!) (+ score-area (* i cel-height-px)))
+                           (((pac-man-layer) 'add-drawable!) tile)
+                           (set! pac-tile tile)
+                           (set! pac-pos (make-pac-man j i))))))))
+            (((level-layer) 'add-drawable!) maze-tile )))
           
-
-        (define (sync-pacman!)
-          (let* ((pos (pac-pos 'position))
-                 (pos-x (pos 'x))
-                 (pos-y (pos 'y)))
-
-            (pac-tile 'set-x! (* pos-x cel-width-px ))
-            (pac-tile 'set-y! (+ score-area (* pos-y cel-height-px)))))
-
-
+          
+          (define (sync-pacman!)
+            (if (and pac-pos pac-tile)
+                (draw-object! pac-pos pac-tile)))
+          
+          
+          
         
-        
-        (lambda (msg)
-          (cond ((eq? msg 'start-draw!) )
-                ((eq? msg 'sync-pacman!) sync-pacman!)
-                ((eq? msg 'draw-game!)(draw-game!))
-                ((eq? msg 'get-window) window)
-                (else (error "draw adt -- unknown message:" msg))))))))
+          (lambda (msg)
+            (cond ((eq? msg 'start-draw!) )
+                  ((eq? msg 'sync-pacman!) sync-pacman!)
+                  ((eq? msg 'get-pacman) pac-pos)
+                  ((eq? msg 'draw-game!)(draw-game!))
+                  ((eq? msg 'get-window) window)
+                  (else (error "draw adt -- unknown message:" msg))))))))
+  

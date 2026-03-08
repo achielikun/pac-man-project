@@ -21,7 +21,7 @@
     (define cel-height-px 23)
     (define game-width 28)
     (define game-height 31)
-    (define distance-between-tiles 3)
+    (define distance-between-tiles 2)
     ;; cel-height-px times a multiple for the score area
     (define score-area (* cel-height-px 3))
     ;; added one extra cel for the score location
