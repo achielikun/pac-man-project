@@ -9,10 +9,10 @@
   (begin
     (define (make-pac-man x y)
       (let ((pos (make-position x y))
-            (direction 'left))
+            (direction 'stop))
         
         (define (move! new-x new-y )
-          ((pos 'set-pos!)new-x new-y))
+          ((pos 'set-pos!) new-x new-y))
         
         
         

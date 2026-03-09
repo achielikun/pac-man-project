@@ -30,8 +30,8 @@
 
 
     
-    (define pac-man-speed 200)
+    (define pac-man-speed 0.15)
     
-    (define ghost-speed 200)))
+    (define ghost-speed 0.15)))
 
 
