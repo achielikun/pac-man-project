@@ -45,8 +45,13 @@
       
       (define (at? x y)
         (vector-ref (vector-ref maze y) x))
+
+      (define (set-cell! x y cell)
+        (vector-set! (vector-ref maze y) x cell))
+        
       
       (lambda (msg)
         (cond ((eq? msg 'at?) at?)
+              ((eq? msg 'set-cell!) set-cell!)
               ((eq? msg 'maze) maze)
               (else (error "object adt -- unknown message :" msg)))))))
