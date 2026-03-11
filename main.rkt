@@ -25,20 +25,42 @@
 (define score (make-score))
 ;;help procedure for collision
 (define (try-turn? dir x y)
-  (and (eq? (pacman 'wish-direction) dir) (collision-check? x y)))
+  (and (eq? (pacman 'wish-direction) dir) (collision-check? x y dir)))
 
 ;;help procedure for ty-turn
-(define (collision-check? next-x next-y)
+(define (collision-check? next-x next-y dir)
   (let* ((radius 0.4)
          (left (exact (round (- next-x radius))))
          (right (exact (round  (+ next-x radius))))
          (top (exact (round (- next-y radius))))
-         (bottom (exact (round (+ next-y radius)))))
+         (bottom (exact (round (+ next-y radius))))
+         (cell ((maze 'at?) (exact (round next-x)) (exact (round next-y)))))
     
+    ;;wall check
     (and (not (eq? ((maze 'at?) left top) 'x))
          (not (eq? ((maze 'at?) right top) 'x))
          (not (eq? ((maze 'at?) left bottom) 'x))
-         (not (eq? ((maze 'at?) right bottom) 'x)))))
+         (not (eq? ((maze 'at?) right bottom) 'x))
+         ;;one way street check
+         ;;only check when there isnt a wall in the way
+         (let ((is-one-way? (or (eq? cell 'u)
+                                (eq? cell 'd) 
+                                (eq? cell 'l) 
+                                (eq? cell 'r))))
+           
+           
+           (if is-one-way?
+               (cond ((eq? cell 'u) (eq? dir 'up))
+                     ((eq? cell 'd) (eq? dir 'down))
+                     ((eq? cell 'l) (eq? dir 'left))
+                     ((eq? cell 'r) (eq? dir 'right))
+                     (else #t))
+               
+              #t )))))
+  
+
+
+
 
 ((window 'set-key-callback!)
  (lambda (type key)
@@ -70,8 +92,8 @@
            #| (display "eaten at:") (display gx) (display ".") (display gy) (newline))|#
          
            
-         (cond ((and (eq? cell 'r) (eq? (pacman 'direction) 'right)) ((pacman 'move!) 0 (pos 'y)))
-               ((and (eq? cell 'l) (eq? (pacman 'direction) 'left)) ((pacman 'move!) (- game-width 1) (pos 'y))))
+         (cond ((and (eq? cell 'tr) (eq? (pacman 'direction) 'right)) ((pacman 'move!) 0 (pos 'y)))
+               ((and (eq? cell 'tl) (eq? (pacman 'direction) 'left)) ((pacman 'move!) (- game-width 1) (pos 'y))))
          
          ;;check collision
          (cond 
@@ -83,10 +105,10 @@
          ;;move pacman
          (let ((dir (pacman 'direction)))
            
-           (cond ((eq? dir 'up) (if (collision-check?   cur-x  (- cur-y pac-man-speed)) ((pacman 'move!)  cur-x (- cur-y pac-man-speed))))
-                 ((eq? dir 'down) (if (collision-check?  cur-x  (+ cur-y pac-man-speed)) ((pacman 'move!)  cur-x (+ cur-y pac-man-speed))))
-             ((eq? dir 'left) (if (collision-check? (- cur-x pac-man-speed)   cur-y) ((pacman 'move!) (- cur-x pac-man-speed)  cur-y)))
-             ((eq? dir 'right) (if (collision-check?  (+ cur-x pac-man-speed)  cur-y ) ((pacman 'move!)(+ cur-x pac-man-speed)  cur-y) )))
+           (cond ((eq? dir 'up) (if (collision-check?   cur-x  (- cur-y pac-man-speed) 'up) ((pacman 'move!)  cur-x (- cur-y pac-man-speed))))
+                 ((eq? dir 'down) (if (collision-check?  cur-x  (+ cur-y pac-man-speed) 'down) ((pacman 'move!)  cur-x (+ cur-y pac-man-speed))))
+                 ((eq? dir 'left) (if (collision-check? (- cur-x pac-man-speed)   cur-y 'left) ((pacman 'move!) (- cur-x pac-man-speed)  cur-y)))
+                 ((eq? dir 'right) (if (collision-check?  (+ cur-x pac-man-speed)  cur-y 'right ) ((pacman 'move!)(+ cur-x pac-man-speed)  cur-y))))
            ((drawer 'sync-pacman!))))))
  )
 

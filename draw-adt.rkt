@@ -37,7 +37,7 @@
         
         (define coin-layer (window 'new-layer!))
         (define coin-grid (make-vector game-height))
-        (define coins-remaining 0)
+     
 
 
 
@@ -120,16 +120,21 @@
        
         (define (toggle-pause-screen! is-paused?)
           (if is-paused?
-              (begin
-                ((pause-tile 'draw-rectangle!) 0 0 window-width-px (+ score-area window-height-px) "black")
-                ((pause-tile 'draw-text!) "PAUSED" 40 100 100 "white")
-                ((pause-tile 'draw-text!) "escape to unpause" 20 140 240 "white")     
-                (((pause-layer) 'add-drawable!) pause-tile))
+              (let* ((title-font 30)
+                     (sub-font 15)
+                     (mid-x (/ window-width-px 2))
+                     (mid-y (/ window-height-px 2)))
+                
                 (begin
-                ((pause-tile 'clear!))
-                (((pause-layer) 'remove-drawable!) pause-tile))))
-        
-        
+                  ((pause-tile 'draw-rectangle!) 0 score-area window-width-px window-height-px "black")
+                  ((pause-tile 'draw-text!) "Game Paused" title-font(- mid-x 100) mid-y "red")
+                  ((pause-tile 'draw-text!) "escape to unpause" 20 (- mid-x 100) (+ mid-y 40) "red")     
+                  (((pause-layer) 'add-drawable!) pause-tile)))
+                (begin
+                  ((pause-tile 'clear!))
+                  (((pause-layer) 'remove-drawable!) pause-tile))))
+          
+          
 
         
 
@@ -169,7 +174,10 @@
                           (* j cel-width-px)
                           (+ score-area (* i cel-height-px))
                           (- cel-width-px distance-between-tiles) (- cel-height-px distance-between-tiles)  "blue"))
-                       
+                        ((eq? (vector-ref raw-row j) 'u)
+                         ((maze-tile 'draw-text!) "△" 20 (* j cel-width-px) (+ score-area (* i cel-height-px)) "white"))
+                         
+                        
                          
                         ((eq? (vector-ref raw-row j) '())
                          (let* ((new-coin (make-coin j i 'yellow))
@@ -182,8 +190,9 @@
                            
                            ((tile 'set-y!) (+ score-area (* i cel-height-px)))
                            (((coin-layer) 'add-drawable!) tile)
-                           (set! coins-remaining (+ coins-remaining 1))
+                          
                            (vector-set! (vector-ref coin-grid i) j (cons new-coin tile)) ))
+
                         
                         ((eq? (vector-ref raw-row j) 'p)
                          (let ((tile (make-tile cel-width-px cel-height-px)))
@@ -219,7 +228,7 @@
                                         
                                        ;; ((tile-obj 'set-y!) (+ score-area (* y cel-height-px)))
                                         (((coin-layer) 'remove-drawable!) tile-obj)
-                                        (set! coins-remaining (- coins-remaining 1))
+                                       
                                         ((score 'score+!) val)
                                         (refresh-score!)
                                         
