@@ -84,7 +84,7 @@
                        (old-tile (cdr old-pair)))
 
                   (begin
-                   ; ((old-tile 'clear!))
+                    ((old-tile 'clear!))
                     (((coin-layer) 'remove-drawable!) old-tile)
 
                     (let ((colors '(red green blue)))
@@ -133,7 +133,7 @@
                   ((pause-tile 'draw-text!) "escape to unpause" 20 (- mid-x 100) (+ mid-y 40) "red")     
                   (((pause-layer) 'add-drawable!) pause-tile)))
                 (begin
-                 ; ((pause-tile 'clear!))
+                  ((pause-tile 'clear!))
                   (((pause-layer) 'remove-drawable!) pause-tile))))
           
           
@@ -145,7 +145,7 @@
                 (font 18)
                 (offset 50))
             (begin
-              ;((score-tile 'clear!))
+              ((score-tile 'clear!))
               ((score-tile 'draw-text!) (number->string cur-val) font (- window-width-px offset) 5 "white"))))
 
 
@@ -226,7 +226,7 @@
                                        (begin #|(display "coins found! removing") (newline)|#
                                    (coin-obj 'eat!)
                                    
-                                  ; ((tile-obj 'clear!))
+                                   ((tile-obj 'clear!))
                                    
                                    (((coin-layer) 'remove-drawable!) tile-obj)
                                    ;;updating the score when a coin is eaten 
