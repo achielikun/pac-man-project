@@ -2,8 +2,7 @@
 (define-library ()
 
   (import (scheme base)
-          (pac-man-project position-adt)
-          (pac-man-project score-adt))
+          (pac-man-project position-adt))
   (export make-coin))
 
   (begin
