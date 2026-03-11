@@ -8,9 +8,17 @@
 
   (begin
 
+    
 
-    (define (make-coin x y)
+
+    
+    
+    (define (make-coin x y color)
       (let ((eaten #f)
+            (value (cond ((eq? color 'red) 40)
+                         ((eq? color 'green) 30)
+                         ((eq? color 'blue) 25)
+                         (else 10)))
             (pos (make-position x y)))
         
         (define (eat!)
@@ -22,5 +30,7 @@
         (lambda (msg)
           (cond ((eq? msg 'position) pos)
                 ((eq? msg 'eaten?) eaten)
+                ((eq? msg 'value) value)
+                ((eq? msg 'color) color)
                 ((eq? msg 'eat!)(eat!))
                 (else (error "object adt -- unknown message :" msg)))) )))

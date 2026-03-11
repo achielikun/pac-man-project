@@ -14,6 +14,8 @@
           window-width-px
           window-height-px
           distance-between-tiles
+          colored-coins
+          coin-size
           score-area)
 
   (begin
@@ -27,8 +29,9 @@
     ;; added one extra cel for the score location
     (define window-height-px (+ (* cel-height-px game-height) score-area))
     (define window-width-px (* cel-width-px game-width))
-
-
+    
+    (define colored-coins 8)
+    (define coin-size 8)
     
     (define pac-man-speed 0.2)
     

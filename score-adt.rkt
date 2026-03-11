@@ -7,8 +7,8 @@
     (define (make-score)
       (let ((score 0))
 
-        (define (score+!)
-          (set! score (+ score 10)))
+        (define (score+! x)
+          (set! score (+ score x)))
 
         (lambda (msg)
           (cond ((eq? msg 'score+!) score+!)
