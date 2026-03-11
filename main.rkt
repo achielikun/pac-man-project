@@ -4,25 +4,23 @@
         (scheme write)
         (pac-man-project draw-adt)
         (pac-man-project constants)
-        (pac-man-project maze-adt)
-        (pac-man-project score-adt))
+        (pac-man-project maze-adt))
 
 
 
-
+;;initializeren van een draw-object
 (define drawer (make-draw  window-width-px window-height-px))
 (drawer 'draw-game!)
 (define window (drawer 'get-window))
-(define pacman (drawer 'get-pacman))
+(define pacman (drawer 'get-pac-man))
 
 (define maze (make-maze))
-(define wish-dir 'stop)
-(define actual-dir 'stop)
 
+;;start game unpaused
 (define paused? #f)
 
 
-(define score (make-score))
+
 ;;help procedure for collision
 (define (try-turn? dir x y)
   (and (eq? (pacman 'wish-direction) dir) (collision-check? x y dir)))
@@ -67,16 +65,17 @@
 
 
 
-
+;;fetch keyboard input
 ((window 'set-key-callback!)
  (lambda (type key)
    (if (eq? type 'pressed)
-       (cond ((eq? key 'up) ((pacman 'wish-direction!) 'up))
-             ((eq? key 'down) ((pacman 'wish-direction!) 'down))
-             ((eq? key 'left) ((pacman 'wish-direction!) 'left))
-             ((eq? key 'right) ((pacman 'wish-direction!) 'right))
+       (cond ((eq? key 'up) ((pacman 'set-wish-direction!) 'up))
+             ((eq? key 'down) ((pacman 'set-wish-direction!) 'down))
+             ((eq? key 'left) ((pacman 'set-wish-direction!) 'left))
+             ((eq? key 'right) ((pacman 'set-wish-direction!) 'right))
              ((eq? key 'escape) #|(display "escape pressed") (newline)|# (set! paused? (not paused?)) ((drawer 'toggle-pause-screen!) paused?))))))
- 
+
+;;update the screen
 ((window 'set-update-callback!)
  (lambda (dt)
    (if (not paused?)
@@ -103,10 +102,10 @@
          
          ;;check collision
          (cond 
-           ((try-turn? 'up  cur-x (- cur-y pac-man-speed)) ((pacman 'direction!) 'up) ((pacman 'move!) cur-x cur-y))
-           ((try-turn? 'down  cur-x  (+ cur-y pac-man-speed)) ((pacman 'direction!) 'down)  ((pacman 'move!) cur-x cur-y))
-           ((try-turn? 'left  (- cur-x pac-man-speed)   cur-y) ((pacman 'direction!) 'left)  ((pacman 'move!) cur-x  cur-y))
-           ((try-turn? 'right  (+ cur-x pac-man-speed)  cur-y ) ((pacman 'direction!) 'right)  ((pacman 'move!) cur-x  cur-y)))
+           ((try-turn? 'up  cur-x (- cur-y pac-man-speed)) ((pacman 'set-direction!) 'up) ((pacman 'move!) cur-x cur-y))
+           ((try-turn? 'down  cur-x  (+ cur-y pac-man-speed)) ((pacman 'set-direction!) 'down)  ((pacman 'move!) cur-x cur-y))
+           ((try-turn? 'left  (- cur-x pac-man-speed)   cur-y) ((pacman 'set-direction!) 'left)  ((pacman 'move!) cur-x  cur-y))
+           ((try-turn? 'right  (+ cur-x pac-man-speed)  cur-y ) ((pacman 'set-direction!) 'right)  ((pacman 'move!) cur-x  cur-y)))
          
          ;;move pacman
          (let ((dir (pacman 'direction)))
@@ -115,9 +114,9 @@
                  ((eq? dir 'down) (if (collision-check?  cur-x  (+ cur-y pac-man-speed) 'down) ((pacman 'move!)  cur-x (+ cur-y pac-man-speed))))
                  ((eq? dir 'left) (if (collision-check? (- cur-x pac-man-speed)   cur-y 'left) ((pacman 'move!) (- cur-x pac-man-speed)  cur-y)))
                  ((eq? dir 'right) (if (collision-check?  (+ cur-x pac-man-speed)  cur-y 'right ) ((pacman 'move!)(+ cur-x pac-man-speed)  cur-y))))
-           ((drawer 'sync-pacman!))))))
+           ((drawer 'sync-pac-man!))))))
  )
 
- 
+;;force the game to redraw to avoid bugs and coins not drawing
 ((window 'set-draw-callback!)
   (lambda () #t))
