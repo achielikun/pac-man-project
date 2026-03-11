@@ -28,8 +28,8 @@
           (let* ((pos (obj 'position))
                  (x (pos 'x))
                  (y (pos 'y))
-                 (pos-x (* x cel-width-px))
-                 (pos-y (+ score-area (* y cel-height-px))))
+                 (pos-x (exact (round (* x cel-width-px))))
+                 (pos-y (exact (round (+ score-area (* y cel-height-px))))))
             ((tile 'set-x!) pos-x)
             ((tile 'set-y!) pos-y)))
         
@@ -210,7 +210,7 @@
           
           (define (sync-pacman!)
             (if (and pac-pos pac-tile)
-                (draw-object! pac-pos pac-tile)))
+               (draw-object! pac-pos pac-tile)))
           
           (define (hide-coin! x y)
             (let* ((row (vector-ref coin-grid y))

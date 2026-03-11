@@ -27,20 +27,26 @@
 (define (try-turn? dir x y)
   (and (eq? (pacman 'wish-direction) dir) (collision-check? x y dir)))
 
+
+        
+
+
 ;;help procedure for ty-turn
 (define (collision-check? next-x next-y dir)
   (let* ((radius 0.4)
-         (left (exact (round (- next-x radius))))
-         (right (exact (round  (+ next-x radius))))
-         (top (exact (round (- next-y radius))))
-         (bottom (exact (round (+ next-y radius))))
-         (cell ((maze 'at?) (exact (round next-x)) (exact (round next-y)))))
+         (get-safe-cell (lambda (nx ny)
+                          ((maze 'at?) (modulo (exact  (round nx)) game-width) (modulo (exact (round ny)) game-height))))
+         (left (- next-x radius))
+         (right  (+ next-x radius))
+         (top  (- next-y radius))
+         (bottom  (+ next-y radius))
+         (cell (get-safe-cell next-x next-y)))
     
     ;;wall check
-    (and (not (eq? ((maze 'at?) left top) 'x))
-         (not (eq? ((maze 'at?) right top) 'x))
-         (not (eq? ((maze 'at?) left bottom) 'x))
-         (not (eq? ((maze 'at?) right bottom) 'x))
+    (and (not (eq? (get-safe-cell left top) 'x))
+         (not (eq? (get-safe-cell right top) 'x))
+         (not (eq? (get-safe-cell left bottom) 'x))
+         (not (eq? (get-safe-cell right bottom) 'x))
          ;;one way street check
          ;;only check when there isnt a wall in the way
          (let ((is-one-way? (or (eq? cell 'u)
@@ -77,8 +83,8 @@
        (let* ((pos (pacman 'position))
               (cur-x (pos 'x))
               (cur-y (pos 'y))
-              (gx (exact (round (pos 'x))))
-              (gy (exact (round ( pos 'y))))
+              (gx (modulo (exact (round (pos 'x))) game-width))
+              (gy (modulo (exact (round ( pos 'y))) game-height))
               (cell ((maze 'at?) gx gy)))
             
          
@@ -91,9 +97,9 @@
            
            #| (display "eaten at:") (display gx) (display ".") (display gy) (newline))|#
          
-           
-         (cond ((and (eq? cell 'tr) (eq? (pacman 'direction) 'right)) ((pacman 'move!) 0 (pos 'y)))
-               ((and (eq? cell 'tl) (eq? (pacman 'direction) 'left)) ((pacman 'move!) (- game-width 1) (pos 'y))))
+         
+         (cond ((and (eq? cell 'tr) (eq? (pacman 'direction) 'right)) (begin ((pacman 'move!) 0 cur-y) (set! cur-x 0)))
+               ((and (eq? cell 'tl) (eq? (pacman 'direction) 'left)) (begin ((pacman 'move!) (- game-width 1) cur-y) (set! cur-x (- game-width 1)))))
          
          ;;check collision
          (cond 
