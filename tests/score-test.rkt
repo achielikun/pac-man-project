@@ -6,12 +6,15 @@
 
 (define (score-test)
   (let ((score (make-score)))
+
+    ;;test initual score
     (check-eq? (score 'score) 0 "initial score should be 0")
               
 
-
+    ;;test add score
     ((score 'score+!) 10)
     (check-eq? (score 'score) 10 "0 plus 10 should add to 10")))
+;;run test
 (run-test score-test "score ADT")
     
 

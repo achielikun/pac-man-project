@@ -192,7 +192,7 @@
                            ((tile 'set-x!)  (* j cel-width-px))
                            
                            ((tile 'set-y!) (+ score-area (* i cel-height-px)))
-                           (((coin-layer) 'add-drawable!) tile)
+                          ;; (((coin-layer) 'add-drawable!) tile)
                            
                            (vector-set! (vector-ref coin-grid i) j (cons new-coin tile)) ))
                            

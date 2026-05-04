@@ -114,9 +114,12 @@
                  ((eq? dir 'down) (if (collision-check?  cur-x  (+ cur-y pac-man-speed) 'down) ((pacman 'move!)  cur-x (+ cur-y pac-man-speed))))
                  ((eq? dir 'left) (if (collision-check? (- cur-x pac-man-speed)   cur-y 'left) ((pacman 'move!) (- cur-x pac-man-speed)  cur-y)))
                  ((eq? dir 'right) (if (collision-check?  (+ cur-x pac-man-speed)  cur-y 'right ) ((pacman 'move!)(+ cur-x pac-man-speed)  cur-y))))
-           ((drawer 'sync-pac-man!))))))
+           ))))
  )
 
 ;;force the game to redraw to avoid bugs and coins not drawing
 ((window 'set-draw-callback!)
-  (lambda () #t))
+ (lambda ()
+   ((drawer 'sync-pac-man!))
+   )
+ )
