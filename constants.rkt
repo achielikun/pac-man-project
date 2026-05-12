@@ -16,7 +16,9 @@
           distance-between-tiles
           colored-coins
           coin-size
-          score-area)
+          score-area
+          offset-x
+          offset-y)
 
   (begin
     (define cel-width-px 23)
@@ -32,9 +34,11 @@
     
     (define colored-coins 8)
     (define coin-size 8)
+    (define offset-x (/ (- cel-width-px coin-size) 2))
+    (define offset-y (/ (- cel-height-px coin-size) 2))
     
-    (define pac-man-speed 0.2)
+    (define pac-man-speed 0.12)
     
-    (define ghost-speed 0.15)))
+    (define ghost-speed 0.12)))
 
 
