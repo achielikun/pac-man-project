@@ -69,7 +69,7 @@
               (do (( x 0 (+ x 1)))
                   ((= x game-width))
                 (let ((coin (vector-ref row x)))
-                  (if (eq? (coin 'color) 'yellow)
+                  (if (and coin (eq? (coin 'color) 'yellow))
                       (set! cords (cons (cons x y) cords))
                       #f)))))))
         ;;procedure to turn a random normal coin into an rgb one this is done because we want 8 rgb coins at all time when possible.
@@ -83,10 +83,9 @@
                        
 
                   (begin
-                    
                     ((coin-tile 'draw-ellipse!)
                                 (+ offset-x (* rx cel-width-px))
-                                (+ offset-y score-area (* rx cel-height-px))
+                                (+ offset-y score-area (* ry cel-height-px))
                                 coin-size coin-size "black")
                     
                     (let ((colors '(red green blue)))

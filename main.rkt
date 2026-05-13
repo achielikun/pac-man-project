@@ -96,7 +96,7 @@
            
            #| (display "eaten at:") (display gx) (display ".") (display gy) (newline))|#
          
-         
+         ;;check for warp cells
          (cond ((and (eq? cell 'tr) (eq? (pacman 'direction) 'right)) (begin ((pacman 'move!) 0 cur-y) (set! cur-x 0)))
                ((and (eq? cell 'tl) (eq? (pacman 'direction) 'left)) (begin ((pacman 'move!) (- game-width 1) cur-y) (set! cur-x (- game-width 1)))))
          
