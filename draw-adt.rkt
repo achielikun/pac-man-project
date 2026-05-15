@@ -159,11 +159,7 @@
           (do ((k 0 (+ k 1)))
               ((= k game-height))
             (vector-set! coin-grid k (make-vector game-width #f)))
-          
-          
-          ;;iniditalize wall grid
-          
-             
+                 
                 
             ;;nested do loops to loop through the matrix 
             (do ((i 0 (+ i 1)))
