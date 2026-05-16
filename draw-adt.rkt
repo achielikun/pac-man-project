@@ -41,6 +41,7 @@
         (define coin-tile (make-tile (* game-width cel-width-px) (+ score-area (* game-height cel-height-px))))
         ;;creation of a coin-grid to store each coin
         (define coin-grid (make-vector game-height))
+        (define total-coins 0)
      
 
 
@@ -103,9 +104,14 @@
         ;;creation of the level-layer or maze layer 
         (define level-layer (window 'new-layer!))
         ;;initialization of the maze matrix
-        (define maze ((make-maze) 'maze))
+        (define maze-object (make-maze))
+        (define maze (maze-object 'maze))
+          
         (define maze-tile (make-tile (* game-width cel-width-px) (+ score-area (* game-height cel-height-px))))
-        
+
+        (((level-layer) 'add-drawable!) maze-tile )
+        (((coin-layer) 'add-drawable!) coin-tile)
+            
         
         ;;initialization of the score 
         (define score (make-score))
@@ -155,12 +161,15 @@
         ;;procedure used to draw the start of the game, the matrix and initial coins
         
         (define (draw-game!)
-          ;;initialize coin grid
-          (do ((k 0 (+ k 1)))
-              ((= k game-height))
-            (vector-set! coin-grid k (make-vector game-width #f)))
-                 
-                
+          (begin
+            ((maze-tile 'clear!))
+            ((coin-tile 'clear!))
+            ;;initialize coin grid
+            (do ((k 0 (+ k 1)))
+                ((= k game-height))
+              (vector-set! coin-grid k (make-vector game-width #f)))
+            
+            
             ;;nested do loops to loop through the matrix 
             (do ((i 0 (+ i 1)))
                 ((= i game-height))
@@ -171,12 +180,12 @@
                   (cond ((eq? (vector-ref raw-row j) 'x)
                          ;;drawing of a wall at symbol x
                          
-                           
+                         
                          ((maze-tile 'draw-rectangle!)
                           (* j cel-width-px)
                           (+ score-area (* i cel-height-px))
                           (- cel-width-px distance-between-tiles) (- cel-height-px distance-between-tiles)  "blue"))
-
+                        
                         
                         ((eq? (vector-ref raw-row j) 'u)
                          ((maze-tile 'draw-text!) "△" 20 (* j cel-width-px) (+ score-area (* i cel-height-px)) "white"))
@@ -194,34 +203,33 @@
                             coin-size coin-size "yellow")
                            
                            
-                           (vector-set! (vector-ref coin-grid i) j new-coin )))
-                           
-                           ((eq? (vector-ref raw-row j) 'p)
-                            ;;drawing of the pacman tile and initialization of the pacman position
-                            (let ((tile (make-tile cel-width-px cel-height-px)))
-                              ((tile 'draw-ellipse!) 2 2 (- cel-width-px 4) (- cel-height-px 4)  "yellow")
-                              ((tile 'set-x!) (* j cel-width-px))
-                              ((tile 'set-y!) (+ score-area (* i cel-height-px)))
-                              (((pac-man-layer) 'add-drawable!) tile)
-                              (set! pac-tile tile)
-                              (set! pac-pos (make-pac-man j i))))))))
-            (((level-layer) 'add-drawable!) maze-tile )
-            (((coin-layer) 'add-drawable!) coin-tile)
+                           (vector-set! (vector-ref coin-grid i) j new-coin ))
+                         (set! total-coins (+ total-coins 1)))
+                        ((eq? (vector-ref raw-row j) 'p)
+                         ;;drawing of the pacman tile and initialization of the pacman position
+                         (let ((tile (make-tile cel-width-px cel-height-px)))
+                           ((tile 'draw-ellipse!) 2 2 (- cel-width-px 4) (- cel-height-px 4)  "yellow")
+                           ((tile 'set-x!) (* j cel-width-px))
+                           ((tile 'set-y!) (+ score-area (* i cel-height-px)))
+                           (((pac-man-layer) 'add-drawable!) tile)
+                           (set! pac-tile tile)
+                           (set! pac-pos (make-pac-man j i)))))))))
+
             
-          ;; do loop to always keep the amount of rgb coins the same
-          (do ((i 0 (+ i 1)))
-              ((= i colored-coins))
-            (random-rgb!)))
-        
-        ;;help procedure to sync the pacman position of on the grid and the the graphics position
-      (define (sync-pac-man!)
-        (if (and pac-pos pac-tile)
-            (draw-object! pac-pos pac-tile)))
-      ;;procedure to hide a coin when pacman eats one 
-      (define (hide-coin! x y)
-        (let* ((row (vector-ref coin-grid y))
-               (coin-obj (vector-ref row x)))
-          (if coin-obj (let* ((color (coin-obj 'color))
+            ;; do loop to always keep the amount of rgb coins the same
+            (do ((i 0 (+ i 1)))
+                ((= i colored-coins))
+              (random-rgb!)))
+          
+          ;;help procedure to sync the pacman position of on the grid and the the graphics position
+          (define (sync-pac-man!)
+            (if (and pac-pos pac-tile)
+                (draw-object! pac-pos pac-tile)))
+          ;;procedure to hide a coin when pacman eats one 
+          (define (hide-coin! x y)
+            (let* ((row (vector-ref coin-grid y))
+                   (coin-obj (vector-ref row x)))
+              (if coin-obj (let* ((color (coin-obj 'color))
                                   (val (coin-obj 'value))
                                   (pos-x (* x cel-width-px))
                                   (pos-y (+ score-area (* y cel-height-px)))
@@ -237,14 +245,26 @@
                               
                                ;;updating the score when a coin is eaten 
                                ((score 'score+!) val)
-                               (refresh-score!)
-                               
+                               (refresh-score!)                              
                                (vector-set! row x #f)
+                              
+                               (set! total-coins (- total-coins 1))
+
+                               (if (= total-coins 0)
+                                   (begin (next-level!) (display "next level")))
+                               
                                ;; if it wasnt a yellow coin that was removed to add another random rgb coin
                                (if (not (eq? color 'yellow))
                                    (random-rgb!)
                                    #f))))))
-      
+
+
+
+       (define (next-level!)
+          (begin
+            (maze-object 'next-level!)
+            (set! maze (maze-object 'maze))
+            (draw-game!)))
       
       ;;dispatch lambda used to create object closure 
       (lambda (msg)
