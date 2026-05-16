@@ -14,7 +14,7 @@
 (define window (drawer 'get-window))
 (define pacman (drawer 'get-pac-man))
 
-(define maze (make-maze))
+(define maze (drawer 'get-maze))
 
 ;;start game unpaused
 (define paused? #f)

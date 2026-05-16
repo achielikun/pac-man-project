@@ -164,6 +164,7 @@
           (begin
             ((maze-tile 'clear!))
             ((coin-tile 'clear!))
+         
             ;;initialize coin grid
             (do ((k 0 (+ k 1)))
                 ((= k game-height))
@@ -205,6 +206,8 @@
                            
                            (vector-set! (vector-ref coin-grid i) j new-coin ))
                          (set! total-coins (+ total-coins 1)))
+
+                        
                         ((eq? (vector-ref raw-row j) 'p)
                          ;;drawing of the pacman tile and initialization of the pacman position
                          (let ((tile (make-tile cel-width-px cel-height-px)))
@@ -271,6 +274,7 @@
         (cond ((eq? msg 'hide-coin!) hide-coin!) 
               ((eq? msg 'sync-pac-man!) sync-pac-man!)
               ((eq? msg 'get-pac-man) pac-pos) ;;getter for the pacman object
+              ((eq? msg 'get-maze) maze-object)
               ((eq? msg 'draw-game!)(draw-game!))
               ((eq? msg 'get-window) window) ;;getter for the window 
               ((eq? msg 'toggle-pause-screen!) toggle-pause-screen!)
